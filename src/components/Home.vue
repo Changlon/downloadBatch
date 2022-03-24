@@ -32,20 +32,20 @@
                 </van-popup>
         </div>
 
-    <div class="margin-top-3" style="width:97%;margin:30px auto"><van-button type="primary" block >下载</van-button></div> 
+        <div class="margin-top-3" style="width:97%;margin:30px auto"><van-button type="primary" block @click="download" > 
+        下载
+        </van-button></div> 
         
 
-        
-    </div> 
+    </div>  
 
-
-
- 
 
 </template>
 
 <script>
 import { ref } from '@vue/reactivity'
+import {parseInsLink} from "../utils"
+import {Notify} from "vant"
 
 export default {
     name:"Home",
@@ -59,27 +59,32 @@ export default {
             12, //一年
         ])
 
+        let link = ref("") 
         let  showPicker = ref(false)
         let  dateFieldRoundStr =  dateFieldRound.value.map(days=>days===0 ? `最近1星期` : days === 12 ? `最近1年` : `最近${days}个月`)
         let  value = dateFieldRoundStr[0] 
 
-       
-
+      
         return {
             dateFieldRound,
             dateFieldRoundStr,
             showPicker,
-            value
+            value,
+            link
         }
     }, 
+
+    created() {
+
+    },
+
     data() {
-        const that = this 
         return {
-            link:"",
             postData:{
                 link:"",
                 username:"", 
                 linkType:"",
+                shortcode:"",
                 openid:"",
                 months:0,
                 scene:"batch" 
@@ -97,18 +102,38 @@ export default {
             (`当前值: ${value}, 当前索引: ${index}`)
             this.onCancel() 
             this.postData.months = this.dateFieldRound[index] 
+            this.value = this.dateFieldRoundStr[index]
             console.log(this.postData)
             
         },
-
 
         onChange (value, index) {
              console.log(`当前值: ${value}, 当前索引: ${index}`);
         },
         
-        onCancel () { this.setPicker(false)}
+        onCancel () { this.setPicker(false)},  
+
+        //用户下载
+        download() {    
+            const that = this 
+            if(!that.postData.link) return Notify("请输入链接")
             
+            this.$router.push({params:that.postData,name:"imageList"})
+        },  
+            
+    },  
+    watch:{
+        link(n) {   
+            const that  = this 
+            const result =  parseInsLink(n) 
+            if(!result) return 
+            that.postData.link = result.link 
+            that.postData.username = result.username 
+            that.postData.linkType = result.type 
+            that.postData.shortcode = result.shortcode 
+        }
     }
+    
 } 
 
 </script>

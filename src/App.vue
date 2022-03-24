@@ -28,7 +28,14 @@ import { watch } from '@vue/runtime-core'
 
 <template>
 
-<router-view  />
+<router-view v-slot="{ Component }">
+    <keep-alive>
+      <component :is="Component"  v-if="$route.meta.keepAlive" :key="$route.name"/>
+    </keep-alive>
+    <component :is="Component"  v-if="!$route.meta.keepAlive"/>
+  </router-view> 
+
+
 
 <van-tabbar v-model="tabbarActive" v-show="(path!=='/sub')" >
   <van-tabbar-item  replace to ="/home" name="home" icon="down">批量下载</van-tabbar-item>
