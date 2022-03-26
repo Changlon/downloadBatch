@@ -54,6 +54,7 @@
      >
         <van-tab name="p">  <template v-slot:title><van-icon name="qr" /> 帖子</template> 
             <div class="post-box">
+             
                 <div class="post-type margin-top" >
                     <i class="post-type-position ins " :class=" false ? 'ins-duotu' : 'ins-shexiangtou'"></i>
                     <div class="post-img-wrap">
@@ -66,6 +67,59 @@
                         />
                     </div>
                  </div>
+
+                  <div class="post-type margin-top" >
+                    <i class="post-type-position ins " :class=" false ? 'ins-duotu' : 'ins-shexiangtou'"></i>
+                    <div class="post-img-wrap">
+                        <van-image
+                            width="100px"
+                            height="100px"
+                            fit="cover"
+                            position="left"
+                            src="https://cdn.jsdelivr.net/npm/@vant/assets/cat.jpeg"
+                        />
+                    </div>
+                 </div>
+
+                  <div class="post-type margin-top" >
+                    <i class="post-type-position ins " :class=" false ? 'ins-duotu' : 'ins-shexiangtou'"></i>
+                    <div class="post-img-wrap">
+                        <van-image
+                            width="100px"
+                            height="100px"
+                            fit="cover"
+                            position="left"
+                            src="https://cdn.jsdelivr.net/npm/@vant/assets/cat.jpeg"
+                        />
+                    </div>
+                 </div>
+
+                  <div class="post-type margin-top" >
+                    <i class="post-type-position ins " :class=" false ? 'ins-duotu' : 'ins-shexiangtou'"></i>
+                    <div class="post-img-wrap">
+                        <van-image
+                            width="100px"
+                            height="100px"
+                            fit="cover"
+                            position="left"
+                            src="https://cdn.jsdelivr.net/npm/@vant/assets/cat.jpeg"
+                        />
+                    </div>
+                 </div>
+
+                  <div class="post-type margin-top" >
+                    <i class="post-type-position ins " :class=" false ? 'ins-duotu' : 'ins-shexiangtou'"></i>
+                    <div class="post-img-wrap">
+                        <van-image
+                            width="100px"
+                            height="100px"
+                            fit="cover"
+                            position="left"
+                            src="https://cdn.jsdelivr.net/npm/@vant/assets/cat.jpeg"
+                        />
+                    </div>
+                 </div>
+                 
             </div>
         </van-tab>
 
@@ -82,7 +136,7 @@
 
     </van-tabs>
 
-     <div class="margin-top-1"></div>
+     <div class="margin-top-3"></div>
      <van-loading size="34px" v-show="loadding" vertical style="text-align:center;">加载中...</van-loading>
 
 
@@ -97,7 +151,6 @@
 import { ref } from '@vue/reactivity' 
 import {batchDownloadMessionInfo} from "../common"
 import {Notify} from "vant"
-
 export default { 
     name:"ImageList", 
     setup() {
@@ -128,14 +181,9 @@ export default {
         //     this.loadding = true
             
         //     //轮询获取数据 
-
-
         // })()
-
-
         
       
-
         
     },
     methods:{
@@ -144,11 +192,10 @@ export default {
             else this.loadding = true 
         }
     }
-
 }
 </script>
 
-<style>
+<style scoped>
 .ins-user-head{font-size: 16px;font-weight: lighter;padding: 10px 20px;}
 .ins-user-top {display: flex;position: relative;}
 .ins-user-info {padding: 2px 10px;}
@@ -157,12 +204,10 @@ export default {
 .ins-user-subscribe{font-size: 14px;padding: 2px;color: rgba(100, 100, 100, .8);}
 .ins-user-account-data{display: flex;justify-content: space-around;padding: 10px 1px;}
 .ins-user-desc{padding: 5px 10px;font-size: 14px;font-family: 黑体;}
-.post-box{padding: 10px;display: flex; justify-content: space-between;flex-wrap: wrap;}
+
+.post-box{padding: 10px;display: flex; flex-wrap: wrap;}
 .post-img-wrap {width: 100px;height: 100px;}
-.post-type {position: relative;width: 100px;height: 100px;}
+.post-type {position: relative;width: 100px;height: 100px;margin-left: 10px;}
 .post-type-position{position:absolute;right: 8px;top: 8px;z-index: 1;color: #fff;}
-
 .ins-user-subscriber-action{position:absolute;top: 5px;right: 1px;}
-
-
 </style>

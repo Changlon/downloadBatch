@@ -13,9 +13,19 @@ import { watch } from '@vue/runtime-core'
       watch(()=>route.path,()=>{
         path.value = route.path
       })
+
+      const excludeRoutes = [
+        "sub",
+        "order",
+        "imageDownload"
+
+      ]
+
+
       return {
         tabbarActive,
-        path
+        path,
+        excludeRoutes
       }
     },
     methods:{
@@ -37,7 +47,7 @@ import { watch } from '@vue/runtime-core'
 
 
 
-<van-tabbar v-model="tabbarActive"  v-show="(path!=='/sub' && path!=='/order')" >
+<van-tabbar v-model="tabbarActive"  v-show="(excludeRoutes.includes(path))" >
   <van-tabbar-item  replace to ="/home" name="home" icon="down">批量下载</van-tabbar-item>
   <van-tabbar-item  replace to="/record" name = "record" icon="photo-o">下载记录</van-tabbar-item>
 </van-tabbar>
