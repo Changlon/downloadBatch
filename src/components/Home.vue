@@ -1,12 +1,12 @@
 <template>
     <div >
         <div class="top-box"> 
-           <div class="text-center"><img src="../assets/logo.png" style="width:150px;height:120px" alt=""></div>
+           <div class="text-center"><img src="../assets/logo.png" style="width:100px;" alt=""></div>
          
             <div class="van-multi-ellipsis--20 logo-tip">
-                一键极速  <van-icon name="chart-trending-o" color="#C0C0C0" /> <br>
-                便捷批量 <van-icon name="exchange" color="#C0C0C0" /> <br>
-                保存  <van-icon name="down" color="#C0C0C0" />   Instagrem 博主所有资源
+                一键极速  <i class="ins ins-jisu"></i> <br>
+                便捷批量 <i class="ins ins-batch"></i> <br>
+                保存Instagrem 博主所有帖子资源   <i class="ins ins-xiazai"></i>
             </div>
         
         </div>  
@@ -44,7 +44,7 @@
 
 <script>
 import { ref } from '@vue/reactivity'
-import {parseInsLink} from "../utils"
+import {parseInsLink,getQueryVariable} from "../utils"
 import {Notify} from "vant"
 
 export default {
@@ -75,9 +75,8 @@ export default {
     }, 
 
     created() {
-
+        this.postData.openid = getQueryVariable("openid")  
     },
-
     data() {
         return {
             postData:{
@@ -116,8 +115,8 @@ export default {
         //用户下载
         download() {    
             const that = this 
+            if(!that.postData.openid) return Notify("没有用户数据")
             if(!that.postData.link) return Notify("请输入链接")
-            
             this.$router.push({params:that.postData,name:"imageList"})
         },  
             
@@ -154,16 +153,6 @@ export default {
         line-height: 30px;
     }
 
-    .text-center{text-align: center;}
-   .padding { padding: 10px;  }
-   .padding-1 {padding: 15px; }
-   .padding-2 {padding: 20px; }
-   .padding-3 {padding: 30px; }
-   
-   .margin-top{margin-top: 10px;} 
-   .margin-top-1{margin-top: 20px;} 
-   .margin-top-2{margin-top: 30px;} 
-   .margin-top-3{margin-top: 40px;} 
-   
+ 
 
 </style>

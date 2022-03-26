@@ -3,15 +3,14 @@ import Home from "../components/Home.vue"
 import Record from "../components/Record.vue"
 import Sub from "../components/Subscribe.vue"
 import ImageList from "../components/ImageList.vue"
+import Order from "../components/Order.vue"
+
 const router = createRouter({
     history:createWebHashHistory(), 
     routes:[
         {
-
             path:"/",
             redirect:"/home"
-          
-            
         },
         {
             path:"/home",
@@ -38,6 +37,12 @@ const router = createRouter({
             path:"/sub",
             component:Sub,
             name:"sub"
+        },
+
+        {
+            path:"/order",
+            component:Order,
+            name:"order"
         }
     ]
 })
