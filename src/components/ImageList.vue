@@ -31,14 +31,14 @@
                 <div class="ins-user-account-name">@mr.lixian</div>  
             </div>
             <div class="ins-user-subscribe">已订阅</div> 
-            <div class="ins-user-subscriber-action"> <i class="ins ins-gengduo"></i> </div> 
+            <div class="ins-user-subscriber-action" @click="overlayShow = true"> <i class="ins ins-gengduo"></i> </div> 
 
         </div>  
 
         <div class="ins-user-account-data"> 
             <div class="post-num">{{677}} 帖子</div> 
             <div class="fans-num">{{200.7}}万 粉丝</div> 
-            <div class="follow-">{{76}} 关注</div>
+            <div class="follow">{{76}} 关注</div>
         </div>        
 
         <div class="ins-user-desc">{{"要让这个世界有了我，可以有那么一点不一样谢谢谢谢谢寻谢谢谢谢谢寻寻寻寻寻寻寻寻寻寻寻寻寻寻寻寻寻寻"}}</div> 
@@ -87,7 +87,7 @@
                         <van-image
                             width="100px"
                             height="100px"
-                            fit="cover"
+                            fit="fill"
                             position="left"
                             src="https://cdn.jsdelivr.net/npm/@vant/assets/cat.jpeg"
                         />
@@ -139,6 +139,14 @@
      <div class="margin-top-3"></div>
      <van-loading size="34px" v-show="loadding" vertical style="text-align:center;">加载中...</van-loading>
 
+    <van-overlay :show="overlayShow" @click="overlayShow = false" >
+        <div style="position:fixed;width:100%;bottom:10px;"> 
+            <van-button color="#fff" type="primary" block @click.stop="()=>{}"> <span style="color:#000;">取消订阅 TA</span>  </van-button> 
+            <div style="margin-top:10px;"></div>
+            <van-button color="#fff" type="primary" block><span style="color:#000;">取消</span></van-button>
+        </div> 
+        
+    </van-overlay>
 
 </div>
 
@@ -157,12 +165,14 @@ export default {
         let loadding = ref(true) 
         let acceptData = ref(true) //收到轮询数据之前为false
         let activeName = ref("p")
+        let overlayShow = ref(false)
         let onClickLeft = ()=>{history.back()}
         return {
             loadding,
             acceptData,
             activeName,
-            onClickLeft
+            onClickLeft,
+            overlayShow
         }
     },
     created(){
@@ -210,4 +220,5 @@ export default {
 .post-type {position: relative;width: 100px;height: 100px;margin-left: 10px;}
 .post-type-position{position:absolute;right: 8px;top: 8px;z-index: 1;color: #fff;}
 .ins-user-subscriber-action{position:absolute;top: 5px;right: 1px;}
+
 </style>

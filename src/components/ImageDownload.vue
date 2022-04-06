@@ -7,6 +7,7 @@
 
 
 <div class="post-box ">
+    
     <div class="post-type margin-top" >
         <van-checkbox v-model="checked" class="post-type-position" name="radio"  icon-size="24px"></van-checkbox>
         <van-image
@@ -113,6 +114,6 @@ export default {
 .post-img-wrap {padding: 20px;}
 .post-type {position: relative;margin-left: 10px;}
 .post-type-position{position:absolute;bottom: 18px;left: 8px;z-index: 1;color: #fff;}
-.ins-user-subscriber-action{position:absolute;top: 5px;right: 1px;}
+
 .footer{ width: 100%;position: fixed; bottom: 40px;text-align: center;}
 </style>

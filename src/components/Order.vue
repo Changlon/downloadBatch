@@ -8,13 +8,13 @@
         <div class="container">
             <!-- 通知 -->
             <div class="notice">
-                <p><i class="iconfont icon-laba1"></i>邀请Ins好友成为会员，赢取更多福利</p>
+                <p><i class="iconfont icon-laba1"></i>邀6好友关注公众号，获一周下载体验包!</p>
                 <button @click="share"><span>邀请</span><i class="iconfont icon-sanjiaoyou"></i></button>
             </div>
             <!-- banner -->
             <div class="banner">
-                <h4>开通年卡 买一年送一年</h4>
-                <p>开通立返100元无门槛优惠券</p>
+                <h4>开通年卡 尊享SVIP特权</h4>
+                <p>优惠套餐限时抢购</p>
                 <i class="iconfont icon-huangguan"></i>
             </div>
         </div>
@@ -24,21 +24,23 @@
             <div class="qy">
                 <ul>
                     <li>
-                        <div class="icon"><i class="iconfont icon-shangshengqushi"></i></div>
+                        <div class="icon"><i class="ins ins-jisu"></i></div>
                         <p>批量下载</p>
                     </li>
                     <li>
-                        <div class="icon"><i class="iconfont icon-rmb"></i></div>
+                        <div class="icon"><i class="ins ins-dingyue"></i></div>
                         <p>博主订阅</p>
                     </li>
                     <li>
-                        <div class="icon"><i class="iconfont icon-quan"></i></div>
-                        <p>套餐优惠</p>
+                        <div class="icon"><i class="ins ins-xiaochengxu"></i></div>
+                        <p>存图小程序</p>
                     </li>
+
                     <li>
-                        <div class="icon"><i class="iconfont icon-home"></i></div>
-                        <p></p>
+                        <div class="icon"><i class="ins ins-youhuiquan"></i></div>
+                        <p>充值再优惠</p>
                     </li>
+                    
                 </ul>
             </div>
             <h2><span>会员套餐</span><a><i class="iconfont icon-info"></i>会员套餐</a></h2>
@@ -47,20 +49,15 @@
                     <li v-for="(item,index) in list" :class="item.checked?'on':''" @click="chooseTc(index)" :key="index">
                         <p>{{item.name}}</p>
                         <p><span>¥</span>{{item.price}}</p>
-                        <p>原价:¥{{item.oldprice}}</p>
-                        <i>立省{{item.oldprice - item.price}}</i>
+                        <p >   {{typeof item.oldprice =='number' ? '原价:¥' + item.oldprice: item.oldprice}}</p>
+                        <i v-show="typeof item.oldprice =='number'">立省{{item.oldprice - parseInt(item.price)}}</i>
                     </li>
                 </ul>
             </div>
-            <!-- 协议 -->
-            <div class="agreement">
-                <i class="iconfont" :class="agreement?'icon-radio-select':'icon-radio-none'"></i>
-                <p @click="agreement=!agreement"><span>已阅读并同意</span><a href="#">《商城交易协议》</a><a href="#">《网络安全健康协议》</a>
-                </p>
-            </div>
+            
             <!-- 开通会员 -->
             <div class="submit">
-                <i>限时买一年送一年</i>
+                <!-- <i>限时买一年送一年</i> -->
                 <button @click="submit">立即开通会员</button>
             </div>
              
@@ -74,27 +71,52 @@ export default {
     name:"Order",
       data(){
         return {
-             
             agreement: false,
-            list: [{
+            list: [
+
+            {
                 id: 1,
-                name: '连续包年',
-                price: '189',
-                oldprice: '389',
+                name: '3天',
+                price: 19,
+                oldprice: 29,
                 checked: true
-            }, {
+            },
+            
+
+            {
                 id: 2,
-                name: '连续包季',
-                price: '59',
-                oldprice: '159',
+                name: '一个月',
+                price: 29,
+                oldprice: 59,
                 checked: false
-            }, {
+            },  
+
+
+            {
                 id: 3,
-                name: '连续包月',
-                price: '29',
-                oldprice: '39',
+                name: '一个季度',
+                price: '23/月',
+                oldprice: 33*3,
                 checked: false
-            }],
+            },
+            
+            {
+                id: 4,
+                name: '一年SIVP',
+                price: 149,
+                oldprice: 199,
+                checked: false
+            }, 
+
+
+            {
+                id: 5,
+                name: '终身SVIP',
+                price: '199', 
+                oldprice: 299,
+                checked: false
+            }
+        ],
             selected: {
                 id: 1,
                 name: '连续包年',

@@ -30,8 +30,8 @@ img{vertical-align: middle;max-width: 100%;}
 .qy ul li i{font-size: .45rem;color: #ffffff;}
 .qy ul li p{font-size: .26rem;color: #303030;margin-top: .1rem;}
 .tc{width: 100%;margin-top: .1rem;margin-bottom: .4rem;padding: 0 .1rem;}
-.tc ul{width: 100%;display: flex;justify-content: space-between;}
-.tc ul li{width: 1.95rem;height: 2.4rem;border-radius: .25rem;border: .02rem solid #e2e2e2;display: flex;flex-direction: column;align-items: center;justify-content: center;position: relative;}
+.tc ul{width: 100%;display: flex;flex-wrap: wrap;}
+.tc ul li{width: 1.95rem;height: 2.4rem;border-radius: .25rem;border: .02rem solid #e2e2e2;display: flex;flex-direction: column;align-items: center;justify-content: center;position: relative;margin-top: .3rem;margin-left: .2rem;}
 .tc ul li p{font-size: .26rem;color: #333333;text-align: center;}
 .tc ul li p:nth-child(1){font-size: .28rem;margin-bottom: .1rem;}
 .tc ul li p:nth-child(2){font-size: .5rem;font-weight: bold;}

@@ -13,7 +13,7 @@
 
         <div class="input-box">
         
-            <van-search v-model="link" placeholder="请粘贴博主主页或帖子链接" />
+            <van-search shape="round" v-model="link" placeholder="请粘贴博主主页或帖子链接" />
             <van-field
                 v-model="value"
                 is-link
