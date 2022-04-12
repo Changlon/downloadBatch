@@ -157,7 +157,7 @@
 
 <script> 
 import { ref } from '@vue/reactivity' 
-import {batchDownloadMessionInfo} from "../common"
+import {batchDownloadMessionInfo,getBatchDownloadInsUserResult,getBatchDownloadInsDataResult} from "../common"
 import {Notify} from "vant"
 export default { 
     name:"ImageList", 
@@ -180,18 +180,58 @@ export default {
         const {linkType,username} = postParams 
         if(linkType === "p" && username) {
             postParams.link = `https://www.instagram.com/${username}/` 
-            postParams.linkType = "profile"
+            postParams.linkType = "index"
         }
         
-        // (async()=>{
-        //     //发送批量任务请求
-        //    const res = await batchDownloadMessionInfo(postParams) 
-        //    if(res.data.code === 500) return Notify(res.data.msg) && this.$router.back() 
-        //     Notify({ type: 'success', message: res.data.msg })
-        //     this.loadding = true
-            
-        //     //轮询获取数据 
-        // })()
+        (async()=>{
+            //发送批量任务请求
+            let res = await  batchDownloadMessionInfo(postParams)  
+            Notify({ type: 'success', message: "正在获取批量结果" })
+            this.loadding = true
+            //轮询获取数据 
+            let targetParams = res?.data?.data 
+
+        //    let insUserDataClear = setInterval(async ()=>{  
+        //        if(!targetParams) return clearInterval(insUserDataClear) 
+        //        try {
+        //            console.log("请求用户数据")
+        //            let res = await getBatchDownloadInsUserResult(targetParams)   
+        //            if(res.data.data) clearInterval(insUserDataClear) 
+        //            const insUserData = res.data.data  
+        //            console.log("博主信息",insUserData)
+        //        }catch(e) { 
+        //            console.log(e) 
+        //            clearInterval(insUserDataClear)
+        //        }
+
+        //     },1000)
+
+
+            // 终止条件 corsorType = 1  hasNext = false  
+            async function queryInsData(corsor = 0 , corsorType = 0 ,hasNext = true ){  
+              if(!targetParams) return clearTimeout(postDataClear) 
+               try {
+                   console.log("请求用户帖子数据")
+                   let res = await getBatchDownloadInsDataResult({...targetParams,corsor,corsorType}) 
+                   const resData = res.data.data    
+                   console.log(resData)
+                   corsor = resData.corsor 
+                   corsorType = resData.corsorType
+                   hasNext = resData.hasNext  
+                   if(corsorType === 1 && hasNext === false) return clearTimeout(postDataClear) 
+                   if(hasNext === false && corsorType !==1) corsorType = 1 , corsor = 0
+                   const insUserPostData = resData.insPostData    
+                //    console.log("博主帖子信息",insUserPostData)  
+                    console.log(corsor,corsorType,hasNext)
+                   setTimeout(async ()=>{ await queryInsData(corsor,corsorType,hasNext)},1000)
+               }catch(e) { 
+                   console.log(e) 
+                   clearInterval(postDataClear)
+               }
+            }
+            let postDataClear = setTimeout(queryInsData,1000)
+
+        })()
         
       
         
@@ -214,7 +254,6 @@ export default {
 .ins-user-subscribe{font-size: 14px;padding: 2px;color: rgba(100, 100, 100, .8);}
 .ins-user-account-data{display: flex;justify-content: space-around;padding: 10px 1px;}
 .ins-user-desc{padding: 5px 10px;font-size: 14px;font-family: 黑体;}
-
 .post-box{padding: 10px;display: flex; flex-wrap: wrap;}
 .post-img-wrap {width: 100px;height: 100px;}
 .post-type {position: relative;width: 100px;height: 100px;margin-left: 10px;}

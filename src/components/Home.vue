@@ -53,10 +53,10 @@ export default {
   
         let dateFieldRound = ref([
             0, //一星期
-            1, //一个月
-            3, //三个月
-            6, //半年
-            12, //一年
+            1 , //一个月
+            3 , //三个月
+            6 , //半年
+            12 , //一年
         ])
 
         let link = ref("") 
@@ -85,7 +85,7 @@ export default {
                 linkType:"",
                 shortcode:"",
                 openid:"",
-                months:0,
+                days:7,
                 scene:"batch" 
             }
             
@@ -100,7 +100,7 @@ export default {
             console.log
             (`当前值: ${value}, 当前索引: ${index}`)
             this.onCancel() 
-            this.postData.months = this.dateFieldRound[index] 
+            this.postData.days = this.dateFieldRound[index] === 0 ?  7 : this.dateFieldRound[index] * 30 
             this.value = this.dateFieldRoundStr[index]
             console.log(this.postData)
             

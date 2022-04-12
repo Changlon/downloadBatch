@@ -17,7 +17,7 @@ const Win = window
     let username , type , shortcode 
     
     if(pathArr.length===1){ 
-        type = "profile", username = pathArr[0]  
+        type = "index", username = pathArr[0]  
     }else if (pathArr.length ===2){ 
         type = pathArr[0] , shortcode = pathArr[1]
     }else if(pathArr.length ===3) { 

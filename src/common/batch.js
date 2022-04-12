@@ -20,11 +20,18 @@
  
 
  /**
-  * 获取批量任务结果
+  * 获取批量任务ins帖子信息
   * @param {*} data 
   * @returns 
   */
-export const getBatchDownloadResult = async data => request("/getBatchDownloadResult",data,"post")
+export const getBatchDownloadInsDataResult = async data=>request("/queryBatchDownloadResult",data,"post")
+
+ /**
+  * 获取批量任务ins博主信息
+  * @param {*} data 
+  * @returns 
+  */
+export const getBatchDownloadInsUserResult = async data => request("/queryInsUserInfo",data,"post")
 
 
 

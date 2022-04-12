@@ -75,6 +75,7 @@ import {searchInsUser,getAllCategorites,searchInsUserByCategory} from "../common
 export default {
     name:"Subscribe", 
     setup() {
+      
       const activeIndex = ref(0) 
       const searchTxt = ref("")
       const searchList = ref([]) 
@@ -111,7 +112,6 @@ export default {
 
 
       const onLoad = async () => {
-
           loading.value = true 
           let res  = await searchInsUserByCategory({cateId:cateId.value, start : start.value}) 
           loading.value = false 
