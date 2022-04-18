@@ -7,5 +7,13 @@ export default {
     styleImport({
       resolves: [VantResolve()],
     }),
-  ],
+  
+  ], 
+  
+  server:{
+  
+    
+  }
+
+
 };

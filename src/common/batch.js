@@ -34,6 +34,18 @@ export const getBatchDownloadInsDataResult = async data=>request("/queryBatchDow
 export const getBatchDownloadInsUserResult = async data => request("/queryInsUserInfo",data,"post")
 
 
+/**
+ * 获取批量任务细节
+ * @param {*} data 
+ * @returns 
+ */
+export const getBatchDownloadDetail =async data=>request("/queryPostDetail",data,"post")
 
 
 
+/**
+ * 批量下载帖子
+ * @param {*} data 
+ * @returns 
+ */
+export const downloadZipFile = async (openid,mediaListStr)=>request(`/downloadZipFile?openid=${openid}&${mediaListStr}`,{},"post")

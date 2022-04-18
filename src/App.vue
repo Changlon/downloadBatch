@@ -39,11 +39,12 @@ import { watch } from '@vue/runtime-core'
 
 <template>
 
-<router-view v-slot="{ Component }">
+ <router-view v-slot="{ Component }">
     <keep-alive>
       <component :is="Component"  v-if="$route.meta.keepAlive" :key="$route.name"/>
     </keep-alive>
     <component :is="Component"  v-if="!$route.meta.keepAlive"/>
+     <!-- <component :is="Component" />  -->
   </router-view> 
 
 
@@ -78,7 +79,7 @@ import { watch } from '@vue/runtime-core'
    .margin-left-2{margin-top: 30px;} 
    .margin-left-3{margin-top: 40px;} 
    
-   .shenglue{overflow: hidden; text-overflow: ellipsis; white-space: nowrap; word-break: break-word; display: inline-block;width: 200px; }
+   .shenglue{overflow: hidden; text-overflow: ellipsis; white-space: nowrap; word-break: break-word; display: inline-block;width: 150px; }
    .shenglue-sm{overflow: hidden; text-overflow: ellipsis; white-space: nowrap; word-break: break-word; display: inline-block;width: 150px; }
    
   

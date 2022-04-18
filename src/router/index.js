@@ -11,7 +11,10 @@ const router = createRouter({
     routes:[
         {
             path:"/",
-            redirect:"/home"
+            redirect:"/home",
+            meta:{
+                keepAlive:true
+            }
         },
         {
             path:"/home",
@@ -32,13 +35,17 @@ const router = createRouter({
         {
             path:"/imageList",
             component:ImageList,
-            name:"imageList"
+            name:"imageList",
+            meta:{
+                keepAlive:false
+            }
         },
 
         {
             path:"/imageDownload",
             component:ImageDownload,
-            name:"ImageDownload"
+            name:"ImageDownload",
+         
         },
 
         {
@@ -51,7 +58,8 @@ const router = createRouter({
             path:"/order",
             component:Order,
             name:"order"
-        }
+        },
+      
     ]
 })
 

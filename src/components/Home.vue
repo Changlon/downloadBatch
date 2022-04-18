@@ -117,7 +117,7 @@ export default {
             const that = this 
             if(!that.postData.openid) return Notify("没有用户数据")
             if(!that.postData.link) return Notify("请输入链接")
-            this.$router.push({params:that.postData,name:"imageList"})
+            this.$router.push({params:that.postData,name:"imageList",query:{timestamp:new Date().getTime()}})
         },  
             
     },  
