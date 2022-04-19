@@ -1,10 +1,10 @@
 <template>
 
-        <div class="top-bar">
+        <!-- <div class="top-bar">
             <a class="iconfont icon-left"></a>
             <span>会员中心</span>
             <i class="iconfont icon-more"></i>
-        </div>
+        </div> -->
         <div class="container">
             <!-- 通知 -->
             <div class="notice">
@@ -37,8 +37,8 @@
                     </li>
 
                     <li>
-                        <div class="icon"><i class="ins ins-youhuiquan"></i></div>
-                        <p>充值再优惠</p>
+                        <div class="icon"><i class="ins ins-app"></i></div>
+                        <p>App下载</p>
                     </li>
                     
                 </ul>

@@ -18,7 +18,8 @@ import { watch } from '@vue/runtime-core'
         "/sub",
         "/order",
         "/imageDownload",
-        "/imageList"
+        "/imageList",
+        "/historyList"
 
       ]
 
@@ -63,10 +64,20 @@ import { watch } from '@vue/runtime-core'
    .padding-2 {padding: 20px; }
    .padding-3 {padding: 30px; }
    
-    .padding-left { padding: 10px;  }
+   .padding-left { padding: 10px;  }
    .padding-left-1 {padding: 15px; }
    .padding-left-2 {padding: 20px; }
    .padding-left-3 {padding: 30px; }
+
+   .padding-bottom { padding: 20px;  }
+   .padding-bottom-1 {padding: 25px; }
+   .padding-bottom-2 {padding: 30px; }
+   .padding-bottom-3 {padding: 40px; }
+
+    .padding-top { padding: 20px;  }
+   .padding-top-1 {padding: 25px; }
+   .padding-top-2 {padding: 30px; }
+   .padding-top-3 {padding: 40px; }
    
 
    .margin-top{margin-top: 10px;} 

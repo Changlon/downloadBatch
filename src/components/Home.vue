@@ -13,7 +13,7 @@
 
         <div class="input-box">
         
-            <van-search shape="round" v-model="link" placeholder="请粘贴博主主页或帖子链接" />
+            <van-search shape="round" v-model="link" placeholder="请粘贴博主页链接" />
             <van-field
                 v-model="value"
                 is-link
@@ -44,7 +44,7 @@
 
 <script>
 import { ref } from '@vue/reactivity'
-import {parseInsLink,getQueryVariable} from "../utils"
+import {parseInsLink,getQueryVariable, set, get} from "../utils"
 import {Notify} from "vant"
 
 export default {
@@ -75,7 +75,8 @@ export default {
     }, 
 
     created() {
-        this.postData.openid = getQueryVariable("openid")  
+        this.postData.openid = getQueryVariable("openid")  || get("openid")
+        if(this.postData.openid) set("openid",this.postData.openid) 
     },
     data() {
         return {

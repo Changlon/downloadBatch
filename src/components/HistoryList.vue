@@ -1,7 +1,7 @@
 <template>
 
 <van-nav-bar  left-text="返回"
-  left-arrow title="资源列表" 
+  left-arrow title="历史列表" 
    @click-left="onClickLeft"
    />
 <van-skeleton class="margin-top-1" title :row="3"  v-show="skeletonLoadding" />
@@ -121,16 +121,18 @@
 
 <script> 
 import { ref } from '@vue/reactivity' 
-import {batchDownloadMessionInfo,getBatchDownloadInsUserResult,getBatchDownloadInsDataResult,downloadZipFile} from "../common"
+import {queryBatchHistoryResult,downloadZipFile,queryInsUserInfo} from "../common"
 import {Notify} from "vant"
 import { getCurrentInstance, onMounted, watch } from '@vue/runtime-core'
 import { useRoute, useRouter } from 'vue-router'
 import { get } from '../utils'
 
+
+
 export default { 
-    name:"ImageList", 
+    name:"HistoryList", 
     setup() { 
-        const {proxy} =  getCurrentInstance() 
+        
         const $route = useRoute() 
         const $router = useRouter() 
 
@@ -164,7 +166,7 @@ export default {
         }
 
         let queryDetial = media_key =>{    
-            $router.push({params:{...postParams.value,mediaKey:media_key,name:"imageList"},name:"ImageDownload",query:{timestamp : new Date().getTime()}})
+            $router.push({params:{...postParams.value,mediaKey:media_key,name:"historyList"},name:"ImageDownload",query:{timestamp : new Date().getTime()}})
         } 
 
 
@@ -178,8 +180,9 @@ export default {
             for(let {mediaKey,checked} of insPostData.value) { 
                 checked? mediaList.push(mediaKey): 0
             }
-
-            if(mediaList.length<=0) return Notify({type:"danger",message:"请选择批量下载的帖子"})
+        
+           
+           if(mediaList.length<=0) return Notify({type:"danger",message:"请选择批量下载的帖子"})
 
            if(openid && mediaList.length > 0 ) {  
                 let mediaListStr = ""  
@@ -199,70 +202,39 @@ export default {
        
         onMounted(async ()=>{
 
-            Notify({ type: 'success', message: "正在获取批量结果",duration:500})
-            if(postParams.value.linkType === "p" && postParams.value.username) { 
-                postParams.value.link = `https://www.instagram.com/${postParams.value.username}/` 
-                postParams.value.linkType = "index" 
-            } 
-            
-            //发送批量任务请求
-            let res   
-            
-            try {
-                res = await  batchDownloadMessionInfo(postParams.value)   
-                if(res.data.code===500){
-                    return Notify({ type: 'danger', message: res.data.msg,duration:2000}) && $router.back()
-                }
-            }catch(e) {
-                 Notify({ type: 'danger', message: e.message,duration:2000})
-                 loadding.value = false 
+            Notify({ type: 'success', message: "正在获取历史结果",duration:500})
+            if(!postParams.value.hId) {
+                    return  Notify({ type: 'danger', message: "没有请求的历史id",duration:500}) && $router.back()
             }
             
-            let nextParams = res?.data?.data    
-
+        
+            queryInsUserData()
             // 请求用户信息
-            let insUserDataClear = setTimeout(queryInsUserData,500)
-
             async function queryInsUserData() {
-                if(!nextParams) return clearTimeout(insUserDataClear)
                 try {
                    console.log("请求用户数据")
-                   res = await getBatchDownloadInsUserResult(nextParams)    
-                   if(!res.data.data) {
-                       clearTimeout(insUserDataClear) 
-                       return setTimeout(queryInsUserData,500) 
-                   }
-
+                   let res = await queryInsUserInfo(postParams.value.openid || get("openid"),postParams.value.username)    
                    const insUserData_ = res.data.data  
                    console.log("博主信息",insUserData)
                    skeletonLoadding.value = false  
                    insUserData.value = insUserData_ 
                 }catch(e) { 
                     console.log(e) 
-                    clearInterval(insUserDataClear)
                     Notify({type:"danger",message:res.data.data.msg,duration:2000})
                 }
                 
             }
 
+            queryInsPostData()
             //请求帖子数据
-            let postDataClear = setTimeout(queryInsData,1000)
-            // 终止条件 corsorType = 1  hasNext = false  
-            async function queryInsData(corsor = 0 , corsorType = 0 ,hasNext = true ){  
-               if(!nextParams) return clearTimeout(postDataClear) 
-               try {
+            async function queryInsPostData() {
+                 try {
                    loadding.value = true
                    console.log("请求用户帖子数据")
-                   res = await getBatchDownloadInsDataResult({...nextParams,corsor,corsorType}) 
+                   let res = await queryBatchHistoryResult(postParams.value.hId,0,0)   
+                   loadding.value = false
+                   skeletonLoadding.value = false
                    const resData = res.data.data    
-                   corsor = resData.corsor 
-                   corsorType = resData.corsorType
-                   hasNext = resData.hasNext  
-                   if(corsorType === 1 && hasNext === false){ 
-                        loadding.value = false
-                        return clearTimeout(postDataClear) 
-                   }
-                   if(hasNext === false && corsorType !==1) corsorType = 1 , corsor = 0
                    const insUserPostData_ = resData.insPostData 
                    for(let item of insUserPostData_ ){   
                        try{
@@ -270,18 +242,52 @@ export default {
                         item.checked = true
                         insPostData.value.push(item)
                        }catch(e) {
-                           Notify({type:"danger",message:e.message,duration:1000})
+                          Notify({type:"danger",message:e.message,duration:1000})
                        }
                    }
-                   loadding.value = false
-                   setTimeout(async ()=>{ await queryInsData(corsor,corsorType,hasNext)},1000)
+                
                }catch(e) { 
-                   console.log(e) 
-                   clearInterval(postDataClear) 
                    Notify({ type:'danger', message:res.data.data.msg ,duration:2000})
                    loadding.value = false 
                }
             }
+   
+            // let postDataClear = setTimeout(queryInsData,1000)
+            // // 终止条件 corsorType = 1  hasNext = false  
+            // async function queryInsData(corsor = 0 , corsorType = 0 ,hasNext = true ){  
+            //    if(!nextParams) return clearTimeout(postDataClear) 
+            //    try {
+            //        loadding.value = true
+            //        console.log("请求用户帖子数据")
+            //        res = await getBatchDownloadInsDataResult({...nextParams,corsor,corsorType}) 
+            //        const resData = res.data.data    
+            //        corsor = resData.corsor 
+            //        corsorType = resData.corsorType
+            //        hasNext = resData.hasNext  
+            //        if(corsorType === 1 && hasNext === false){ 
+            //             loadding.value = false
+            //             return clearTimeout(postDataClear) 
+            //        }
+            //        if(hasNext === false && corsorType !==1) corsorType = 1 , corsor = 0
+            //        const insUserPostData_ = resData.insPostData 
+            //        for(let item of insUserPostData_ ){   
+            //            try{
+            //             item = JSON.parse(item)  
+            //             item.checked = true
+            //             insPostData.value.push(item)
+            //            }catch(e) {
+            //               Notify({type:"danger",message:res.data.msg,duration:1000})
+            //            }
+            //        }
+            //        loadding.value = false
+            //        setTimeout(async ()=>{ await queryInsData(corsor,corsorType,hasNext)},1000)
+            //    }catch(e) { 
+            //        console.log(e) 
+            //        clearInterval(postDataClear) 
+            //        Notify({ type:'danger', message:res.data.data.msg ,duration:2000})
+            //        loadding.value = false 
+            //    }
+            // }
           
      
 

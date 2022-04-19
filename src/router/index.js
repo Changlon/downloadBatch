@@ -5,6 +5,7 @@ import Sub from "../components/Subscribe.vue"
 import ImageList from "../components/ImageList.vue"
 import Order from "../components/Order.vue"
 import ImageDownload from "../components/ImageDownload.vue" 
+import HistoryList from "../components/HistoryList.vue" 
 
 const router = createRouter({
     history:createWebHashHistory(), 
@@ -27,15 +28,21 @@ const router = createRouter({
         {
             path:"/record",
             component:Record,
-            name:"record",
-            meta:{
-                keepAlive:true
-            }
+            name:"record"
         },
         {
             path:"/imageList",
             component:ImageList,
             name:"imageList",
+            meta:{
+                keepAlive:false
+            }
+        },
+
+        {
+            path:"/historyList",
+            component:HistoryList,
+            name:"historyList",
             meta:{
                 keepAlive:false
             }

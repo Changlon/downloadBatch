@@ -1,6 +1,116 @@
+import cryptoJs from "crypto-js" 
+var Win = window  
 
 
-const Win = window 
+
+ function s_() {  
+     return new Promise(r=>{
+         setTimeout(()=>{
+            let canvas = Win.document.getElementById('canvas') 
+            let message =Win.mask.revealText(canvas)  
+            console.log(message)
+            if(message){
+                r(message)   
+            }
+         })
+     })
+}
+
+
+/**
+ * 防止被人恶意调式
+ */
+export function d_() {
+    function block() {
+        if (
+            Win.outerHeight - window.innerHeight > 200 ||
+            Win.outerWidth - window.innerWidth > 200
+        ) {
+            Win.document.body.innerHTML =
+                "检测到非法调试,请关闭后刷新重试!";
+                alert("不学好")
+        }
+        setInterval(() => {
+            (function () {
+                return false;
+            }
+                ["constructor"]("debugger")
+                ["call"]());
+        }, 50) 
+    }
+    try {
+        block() 
+    } catch (err) {}
+}
+
+/**
+ * 获取sign
+ * @returns 
+ */
+
+export async function getSign(){
+    let timestamp =  new Date().getTime()
+    timestamp = (timestamp + "").substring(0,9) 
+    let time_base_64 =  cryptoJs.enc.Base64.stringify(
+        cryptoJs.enc.Utf8.parse(timestamp)
+    ) + "\n"
+    let hmacMd5 =  cryptoJs.HmacMD5( time_base_64 ,cryptoJs.enc.Base64.parse(await s_()))   
+    return hmacMd5.toString()
+} 
+
+
+/**
+ * 浏览器本地清空缓存
+ */
+ export function clear() { 
+    if(Win.localStorage) {
+        Win.localStorage.clear()
+    }else{
+        console.error("浏览器不支持localstorage")
+    }
+}
+
+
+/**
+ * 浏览器本地移除缓存
+ * @param {*} key 
+ */
+ export function remove(key) { 
+    if(Win.localStorage) {
+        Win.localStorage.removeItem(key)
+    }else{
+        console.error("浏览器不支持localstorage")
+    }
+}
+
+
+/**
+ * 浏览器本地 get 缓存
+ * @param {*} key 
+ */
+ export function get(key) { 
+    if(Win.localStorage) {
+      return Win.localStorage.getItem(key)
+    }else{
+        console.error("浏览器不支持localstorage")
+    }
+}
+
+
+/**
+ * 浏览器本地set 缓存
+ * @param {*} key 
+ * @param {*} value 
+ */
+export function set(key,value) { 
+    if(Win.localStorage) {
+        Win.localStorage.setItem(key,value)
+    }else{
+        console.error("浏览器不支持localstorage")
+    }
+}
+
+
 
 /**
  * 解析ins链接

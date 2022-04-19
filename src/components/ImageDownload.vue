@@ -65,16 +65,18 @@ import { Notify } from 'vant'
 import { copyContentH5 } from '../utils'
 
 
+
 export default { 
     name:"ImageDownload",
     setup() {
         const $route =  useRoute() 
         const $router = useRouter()
+         
         let postParams = ref($route.params)  
-        
+           
         let skeletonLoadding = ref(true)
         let onClickLeft = ()=>{
-            $router.push({params:{...postParams.value},name:"imageList"}) 
+            $router.push({params:{...postParams.value},name:$route.params.name}) 
         }
         let checked = ref(true)
 
@@ -153,10 +155,9 @@ export default {
           if(result) {
               Notify({type:"success",message:"复制文案链接成功,粘贴到浏览器查看文案！",duration:3000})
           }
-        },
+        }
     
     }
-
 }
 </script>
 
