@@ -68,6 +68,11 @@
                         </div>
                      </div> 
 
+                     <div class="post-type margin-top" v-show="loadding">
+                          <div class="margin-top-3"></div>
+                            <van-loading size="34px" v-show="loadding" vertical style="text-align:center;">加载中...</van-loading>
+                     </div>
+
 
 
              <div v-if="insPostData.length <=0" style="margin:100px auto;">
@@ -105,8 +110,7 @@
 
     </van-tabs>
 
-    <div class="margin-top-3"></div>
-    <van-loading size="34px" v-show="loadding" vertical style="text-align:center;">加载中...</van-loading>
+   
 
     <van-overlay :show="overlayShow" @click="overlayShow = false" >
         <div style="position:fixed;width:100%;bottom:10px;"> 
@@ -254,7 +258,12 @@ export default {
                    loadding.value = true
                    console.log("请求用户帖子数据")
                    res = await getBatchDownloadInsDataResult({...nextParams,corsor,corsorType}) 
-                   const resData = res.data.data    
+                   const resData = res.data.data   
+                   if(!resData) {
+                     /** 出现请求失败的情况 */ 
+                       loadding.value = false 
+                       return  setTimeout(async ()=>{ await queryInsData(corsor,corsorType,hasNext)},500)
+                   }
                    corsor = resData.corsor 
                    corsorType = resData.corsorType
                    hasNext = resData.hasNext  
@@ -274,11 +283,11 @@ export default {
                        }
                    }
                    loadding.value = false
-                   setTimeout(async ()=>{ await queryInsData(corsor,corsorType,hasNext)},1000)
+                   setTimeout(async ()=>{ await queryInsData(corsor,corsorType,hasNext)},500)
                }catch(e) { 
                    console.log(e) 
                    clearInterval(postDataClear) 
-                   Notify({ type:'danger', message:res.data.data.msg ,duration:2000})
+                   Notify({ type:'danger', message:e.msg ,duration:2000})
                    loadding.value = false 
                }
             }
