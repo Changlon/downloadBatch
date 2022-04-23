@@ -69,7 +69,7 @@
 
                      </div> 
 
-                    <div class="post-type margin-top"> 
+                    <div class="post-type margin-top" v-show="loadding"> 
                                <div class="margin-top-3"></div>
                                 <van-loading size="34px" v-show="loadding" vertical style="text-align:center;">加载中...</van-loading> 
 
@@ -252,7 +252,7 @@ export default {
             }
 
             //请求帖子数据
-            let postDataClear = setTimeout(queryInsData,1000)
+            let postDataClear = setTimeout(queryInsData,500)
             // 终止条件 corsorType = 1  hasNext = false  
             async function queryInsData(corsor = 0 , corsorType = 0 ,hasNext = true ){  
                if(!nextParams) return clearTimeout(postDataClear) 
@@ -261,6 +261,10 @@ export default {
                    console.log("请求用户帖子数据")
                    res = await getBatchDownloadInsDataResult({...nextParams,corsor,corsorType}) 
                    const resData = res.data    
+                   if(!resData) {
+                       loadding = false 
+                       return setTimeout(async ()=>{ await queryInsData(corsor,corsorType,hasNext)},500)
+                   }
                    corsor = resData.corsor 
                    corsorType = resData.corsorType
                    hasNext = resData.hasNext  
@@ -277,13 +281,13 @@ export default {
                                     item.checked = true
                                     insPostData.value.push(item)
                                 }catch(e) {
-                                    Notify({type:"danger",message:e.message,duration:1000})
+                                    Notify({type:"danger",message:e.message,duration:500})
                                 }
                         }
                    }
                   
                    loadding.value = false
-                   setTimeout(async ()=>{ await queryInsData(corsor,corsorType,hasNext)},1000)
+                   setTimeout(async ()=>{ await queryInsData(corsor,corsorType,hasNext)},500)
                }catch(e) { 
                    console.log(e) 
                    clearInterval(postDataClear) 
@@ -291,10 +295,6 @@ export default {
                    loadding.value = false 
                }
             }
-          
-     
-
-
             
         })
 

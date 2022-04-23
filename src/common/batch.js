@@ -16,7 +16,7 @@
   * @returns 
   */
 //  export const batchDownloadMessionInfo =async data => request("/batchDownloadMessionInfo",data,"post") 
- export const batchDownloadMessionInfo =async data => request({route:"/batchDownloadMessionInfo",data,type:"post"})  
+ export const batchDownloadMessionInfo =async data => request({route:"/batchDownloadMessionInfo",data,type:"post",cache,expire})  
  
  /**
   * 获取批量任务ins帖子信息
@@ -50,7 +50,7 @@ export const getBatchDownloadDetail =async data=>request({route:"/queryPostDetai
  * @returns 
  */
 // export const downloadZipFile = async (openid,mediaListStr)=>request(`/downloadZipFile?openid=${openid}&${mediaListStr}`,{},"post") 
-export const downloadZipFile = async (openid,mediaListStr)=>request({route:`/downloadZipFile?openid=${openid}&${mediaListStr}`,type:"post"})  
+export const downloadZipFile = async (openid,mediaListStr)=>request({route:`/downloadZipFile?openid=${openid}&${mediaListStr}`,type:"post",cache,expire})  
 
 
 /**
