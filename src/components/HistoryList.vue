@@ -192,7 +192,7 @@ export default {
                 downLoadding.value = true
                 let res = await downloadZipFile(openid,mediaListStr)   
                 downLoadding.value = false
-                postDownloadZip.value = res.data.data 
+                postDownloadZip.value = res.data 
                 Notify({ type: 'success', message: "批量下载成功，复制zip链接在浏览器打开",duration:1000}) 
            }else{
                 Notify({ type: 'danger', message: "没有用户openid",duration:1000})
@@ -214,13 +214,13 @@ export default {
                 try {
                    console.log("请求用户数据")
                    let res = await queryInsUserInfo(postParams.value.openid || get("openid"),postParams.value.username)    
-                   const insUserData_ = res.data.data  
+                   const insUserData_ = res.data  
                    console.log("博主信息",insUserData)
                    skeletonLoadding.value = false  
                    insUserData.value = insUserData_ 
                 }catch(e) { 
                     console.log(e) 
-                    Notify({type:"danger",message:res.data.data.msg,duration:2000})
+                    Notify({type:"danger",message:res.msg,duration:2000})
                 }
                 
             }
@@ -234,7 +234,7 @@ export default {
                    let res = await queryBatchHistoryResult(postParams.value.hId,0,0)   
                    loadding.value = false
                    skeletonLoadding.value = false
-                   const resData = res.data.data    
+                   const resData = res.data    
                    const insUserPostData_ = resData.insPostData 
                    for(let item of insUserPostData_ ){   
                        try{
@@ -247,7 +247,7 @@ export default {
                    }
                 
                }catch(e) { 
-                   Notify({ type:'danger', message:res.data.data.msg ,duration:2000})
+                   Notify({ type:'danger', message:res.msg ,duration:2000})
                    loadding.value = false 
                }
             }
@@ -260,7 +260,7 @@ export default {
             //        loadding.value = true
             //        console.log("请求用户帖子数据")
             //        res = await getBatchDownloadInsDataResult({...nextParams,corsor,corsorType}) 
-            //        const resData = res.data.data    
+            //        const resData = res.data    
             //        corsor = resData.corsor 
             //        corsorType = resData.corsorType
             //        hasNext = resData.hasNext  
@@ -276,7 +276,7 @@ export default {
             //             item.checked = true
             //             insPostData.value.push(item)
             //            }catch(e) {
-            //               Notify({type:"danger",message:res.data.msg,duration:1000})
+            //               Notify({type:"danger",message:res.msg,duration:1000})
             //            }
             //        }
             //        loadding.value = false
@@ -284,7 +284,7 @@ export default {
             //    }catch(e) { 
             //        console.log(e) 
             //        clearInterval(postDataClear) 
-            //        Notify({ type:'danger', message:res.data.data.msg ,duration:2000})
+            //        Notify({ type:'danger', message:res.data.msg ,duration:2000})
             //        loadding.value = false 
             //    }
             // }

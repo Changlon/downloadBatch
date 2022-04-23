@@ -100,11 +100,11 @@ export default {
             if(!postParams.value.mediaKey){return skeletonLoadding.value=false}  
             let res = await getBatchDownloadDetail(postParams.value)  
             skeletonLoadding.value = false
-          
-            if(res.data.code!==0){
-                return Notify({ type:'danger', message:res.data.msg ,duration:2000})
+          console.log(res)
+            if(res.code!==0){
+                return Notify({ type:'danger', message:res.msg ,duration:2000})
             } 
-            let locals = res.data.data.locals  || [] 
+            let locals = res.data.locals  || [] 
             insPostData.value = locals
             insPostData.value.forEach(async i=>{
                 i.checked=true 

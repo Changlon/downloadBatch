@@ -67,14 +67,15 @@ export default {
         const onLoad = async () => { 
 
              let res = await queryBatchHistory(openid.value) 
+           
              loading.value = false 
              finished.value = true 
             
-             if(res.data.code === 0 ) {
-                 list.value = res.data.data 
-                  Notify({type:"success",message:res.data.msg,duration:1000})
+             if(res.code === 0 ) {
+                 list.value = res.data 
+                  Notify({type:"success",message:res.msg,duration:1000})
              }else{
-                 Notify({type:"danger",message:res.data.msg,duration:2000}) 
+                 Notify({type:"danger",message:res.msg,duration:2000}) 
              }
         }
 

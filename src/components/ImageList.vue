@@ -66,8 +66,15 @@
                                 :src="item.postDisplay"
                             />
                         </div>
+
                      </div> 
 
+                    <div class="post-type margin-top"> 
+                               <div class="margin-top-3"></div>
+                                <van-loading size="34px" v-show="loadding" vertical style="text-align:center;">加载中...</van-loading> 
+
+                                <div v-show="!loadding"> </div>
+                    </div>        
 
 
              <div v-if="insPostData.length <=0" style="margin:100px auto;">
@@ -105,8 +112,7 @@
 
     </van-tabs>
 
-    <div class="margin-top-3"></div>
-    <van-loading size="34px" v-show="loadding" vertical style="text-align:center;">加载中...</van-loading>
+
 
     <van-overlay :show="overlayShow" @click="overlayShow = false" >
         <div style="position:fixed;width:100%;bottom:10px;"> 
@@ -189,7 +195,7 @@ export default {
                 downLoadding.value = true
                 let res = await downloadZipFile(openid,mediaListStr)   
                 downLoadding.value = false
-                postDownloadZip.value = res.data.data 
+                postDownloadZip.value = res.data 
                 Notify({ type: 'success', message: "批量下载成功，复制zip链接在浏览器打开",duration:1000}) 
            }else{
                 Notify({ type: 'danger', message: "没有用户openid",duration:1000})
@@ -210,15 +216,15 @@ export default {
             
             try {
                 res = await  batchDownloadMessionInfo(postParams.value)   
-                if(res.data.code===500){
-                    return Notify({ type: 'danger', message: res.data.msg,duration:2000}) && $router.back()
+                if(res.code!==0){
+                    return Notify({ type: 'danger', message: res.msg,duration:2000}) && $router.back()
                 }
             }catch(e) {
                  Notify({ type: 'danger', message: e.message,duration:2000})
                  loadding.value = false 
             }
             
-            let nextParams = res?.data?.data    
+            let nextParams = res.data    
 
             // 请求用户信息
             let insUserDataClear = setTimeout(queryInsUserData,500)
@@ -228,19 +234,19 @@ export default {
                 try {
                    console.log("请求用户数据")
                    res = await getBatchDownloadInsUserResult(nextParams)    
-                   if(!res.data.data) {
+                   if(!res.data) {
                        clearTimeout(insUserDataClear) 
                        return setTimeout(queryInsUserData,500) 
                    }
 
-                   const insUserData_ = res.data.data  
+                   const insUserData_ = res.data  
                    console.log("博主信息",insUserData)
                    skeletonLoadding.value = false  
                    insUserData.value = insUserData_ 
                 }catch(e) { 
                     console.log(e) 
                     clearInterval(insUserDataClear)
-                    Notify({type:"danger",message:res.data.data.msg,duration:2000})
+                    Notify({type:"danger",message:res.data.msg,duration:2000})
                 }
                 
             }
@@ -254,7 +260,7 @@ export default {
                    loadding.value = true
                    console.log("请求用户帖子数据")
                    res = await getBatchDownloadInsDataResult({...nextParams,corsor,corsorType}) 
-                   const resData = res.data.data    
+                   const resData = res.data    
                    corsor = resData.corsor 
                    corsorType = resData.corsorType
                    hasNext = resData.hasNext  
@@ -264,21 +270,24 @@ export default {
                    }
                    if(hasNext === false && corsorType !==1) corsorType = 1 , corsor = 0
                    const insUserPostData_ = resData.insPostData 
-                   for(let item of insUserPostData_ ){   
-                       try{
-                        item = JSON.parse(item)  
-                        item.checked = true
-                        insPostData.value.push(item)
-                       }catch(e) {
-                           Notify({type:"danger",message:e.message,duration:1000})
-                       }
+                   if(insUserPostData_) {
+                        for(let item of insUserPostData_ ){   
+                                try{
+                                    item = JSON.parse(item)  
+                                    item.checked = true
+                                    insPostData.value.push(item)
+                                }catch(e) {
+                                    Notify({type:"danger",message:e.message,duration:1000})
+                                }
+                        }
                    }
+                  
                    loadding.value = false
                    setTimeout(async ()=>{ await queryInsData(corsor,corsorType,hasNext)},1000)
                }catch(e) { 
                    console.log(e) 
                    clearInterval(postDataClear) 
-                   Notify({ type:'danger', message:res.data.data.msg ,duration:2000})
+                   Notify({ type:'danger', message:res.msg ,duration:2000})
                    loadding.value = false 
                }
             }

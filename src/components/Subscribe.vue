@@ -107,7 +107,7 @@ export default {
           //TODO : 查询博主接口
           const res = await searchInsUser({name,start:start.value})
           searchList.value = res.data
-          // start.value = ( start.value + res.data.length)
+          // start.value = ( start.value + res.length)
       }) 
 
 

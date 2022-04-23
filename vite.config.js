@@ -29,11 +29,15 @@ export default {
     terserOptions: {
       compress: {
         // 打包自动删除console
-        // drop_console: true,
+        drop_console: true,
         // drop_debugger: true
       },
       keep_classnames:true,
     },
-  } 
+  } ,
+
+  productionSourceMap: false 
+  
+
 
 };

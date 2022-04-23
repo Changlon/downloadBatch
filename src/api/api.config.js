@@ -9,8 +9,9 @@ export default {
    pro:{
     domain:"http://5195n943r7.wicp.vip/", 
     port: ""
-   }
+   },
+   cache:true,
+   expire: (1000 * 60 * 30)
 }
-
 
 

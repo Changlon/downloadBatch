@@ -422,6 +422,11 @@ is-core-module@^2.8.1:
   dependencies:
     has "^1.0.3"
 
+js-md5@0.7.3:
+  version "0.7.3"
+  resolved "https://registry.yarnpkg.com/js-md5/-/js-md5-0.7.3.tgz#b4f2fbb0b327455f598d6727e38ec272cd09c3f2"
+  integrity sha512-ZC41vPSTLKGwIRjqDh8DfXoCrdQIyBgspJVPXHBGu4nZlAEvG3nf+jO9avM9RmLiGakg7vz974ms99nEV0tmTQ==
+
 jsonfile@^6.0.1:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/jsonfile/-/jsonfile-6.1.0.tgz#bc55b2634793c679ec6403094eb13698a6ec0aae"
@@ -522,6 +527,15 @@ qs@6.10.3:
   integrity sha512-wr7M2E0OFRfIfJZjKGieI8lBKb7fRCH4Fv5KNPEs7gJ8jadvotdsS08PzOKR7opXhZ/Xkjtt3WF9g38drmyRqQ==
   dependencies:
     side-channel "^1.0.4"
+
+request-any@2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/request-any/-/request-any-2.0.3.tgz#0af42c1083cb33bf9fe5d95c6cadf425f47fd7c4"
+  integrity sha512-or1GbwTmkTlwLMfqPNs3wcOfQpoaTK+RcumtPPsoB7k3JP1x0kiNadId1cNfu+dT8ggHWci2gPReURWFKOr4bg==
+  dependencies:
+    axios "0.26.1"
+    js-md5 "0.7.3"
+    qs "6.10.3"
 
 resolve@^1.22.0:
   version "1.22.0"

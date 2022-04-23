@@ -8,7 +8,7 @@ var Win = window
          setTimeout(()=>{
             let canvas = Win.document.getElementById('canvas') 
             let message =Win.mask.revealText(canvas)  
-            console.log(message)
+            console.log(`message`,message)
             if(message){
                 r(message)   
             }
