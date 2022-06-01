@@ -1,7 +1,7 @@
 <template>
 
 <van-nav-bar  left-text="返回"
-  left-arrow title="资源列表" 
+  left-arrow :title="title" 
    @click-left="onClickLeft"
    />
 <van-skeleton class="margin-top-1" title :row="3"  v-show="skeletonLoadding" />
@@ -58,8 +58,7 @@
                         <van-checkbox class="post-checkbox-position" shape="square" v-model="item.checked"></van-checkbox>
                         <div class="post-img-wrap"   @click="queryDetial(item.mediaKey)">
                             <van-image
-                              
-                                width="100px"
+                                width="100%"
                                 height="100px"
                                 fit="cover"
                                 position="left"
@@ -71,15 +70,10 @@
 
                     <div class="post-type margin-top" v-show="loadding"> 
                                <div class="margin-top-3"></div>
-                                <van-loading size="34px" v-show="loadding" vertical style="text-align:center;">加载中...</van-loading> 
-
-                                <div v-show="!loadding"> </div>
+                               <van-loading size="34px" v-show="loadding" vertical style="text-align:center;">加载中...</van-loading> 
                     </div>        
 
-
-             <div v-if="insPostData.length <=0" style="margin:100px auto;">
-                        <img src="../assets/empty.png" style="width:200px;" alt="">
-                    </div>
+                   
             </div>
             
             <div v-show="insPostData.length>0" class="margin-top-3" style="width:97%;margin:30px auto"> 
@@ -90,7 +84,21 @@
                     </van-button>
             </div>
             
-             <a  class="down-tip" :href="postDownloadZip" v-show="postDownloadZip" ref="down"> 点击下载压缩文件 </a>
+            <div class="tip padding"> 
+                <p>
+                 <a  class="down-tip" :href="postDownloadZip" v-show="postDownloadZip" ref="down"> 点击下载压缩文件 </a>
+                </p>
+                <p>
+                 <van-button style="margin-left:10px" type="primary" size="small" v-show="postDownloadZip" @click="copyDownLoadLink">复制文件下载地址</van-button>
+                </p>
+
+                <p>批量保存方法: </p> 
+                <p>1. 选择文件点击【批量下载】后, 点击【复制文件下载地址】按钮，粘贴到手机自带的浏览器访问即可！</p>
+                <p>2. 如果你的浏览器支持自动下载，直接点击【点击下载压缩文件】下载即可！</p>
+                <p>3. 如果你感觉下载时间漫长，可以先退出，下载好后公众号会发送提醒！</p> 
+              
+             </div>
+
 
         </van-tab> 
 
@@ -131,11 +139,12 @@ import {batchDownloadMessionInfo,getBatchDownloadInsUserResult,getBatchDownloadI
 import {Notify} from "vant"
 import { getCurrentInstance, onMounted, watch } from '@vue/runtime-core'
 import { useRoute, useRouter } from 'vue-router'
-import { get } from '../utils'
+import { copyContentH5, get } from '../utils'
 
 export default { 
     name:"ImageList", 
     setup() { 
+        
         const {proxy} =  getCurrentInstance() 
         const $route = useRoute() 
         const $router = useRouter() 
@@ -152,6 +161,7 @@ export default {
         
         let activeName = ref("p")
         let overlayShow = ref(false)
+        let title = ref("资源下载中 • 请耐心等待")
 
         watch(insPostData,(current)=>{ 
             let checkedNum = 0 
@@ -193,7 +203,21 @@ export default {
                     mediaListStr = mediaListStr + `&mediaList=${str}`
                 }
                 downLoadding.value = true
-                let res = await downloadZipFile(openid,mediaListStr)   
+                
+                let res 
+                
+                try{
+                    res = await downloadZipFile(openid,mediaListStr) 
+                    if(res.code!==0) {
+                                downLoadding.value = false
+                                return  Notify({type:"danger",message:res.msg})
+                           }
+
+                }catch(e){
+                     downLoadding.value = false
+                  return  Notify({type:"danger",message:e.message})
+                }
+                
                 downLoadding.value = false
                 postDownloadZip.value = res.data 
                 Notify({ type: 'success', message: "批量下载成功，复制zip链接在浏览器打开",duration:1000}) 
@@ -203,13 +227,24 @@ export default {
 
         }
        
+        let copyDownLoadLink = ()=>{
+            const result = copyContentH5(postDownloadZip.value) 
+            if(result) {
+                Notify({type:"success",message:"复制文案链接成功,粘贴到浏览器查看文案！",duration:3000})
+            }
+       }
+
+
         onMounted(async ()=>{
 
             Notify({ type: 'success', message: "正在获取批量结果",duration:500})
+            /** 如果帖子链接中带username */
             if(postParams.value.linkType === "p" && postParams.value.username) { 
                 postParams.value.link = `https://www.instagram.com/${postParams.value.username}/` 
                 postParams.value.linkType = "index" 
-            } 
+            } else if(postParams.value.linkType === "index" && postParams.value.username) { 
+                postParams.value.link = `https://www.instagram.com/${postParams.value.username}/` 
+            }
             
             //发送批量任务请求
             let res   
@@ -217,7 +252,9 @@ export default {
             try {
                 res = await  batchDownloadMessionInfo(postParams.value)   
                 if(res.code!==0){
-                    return Notify({ type: 'danger', message: res.msg,duration:2000}) && $router.back()
+                   Notify({ type: 'danger', message: res.msg,duration:2000})  
+                   setTimeout(()=>{$router.back()},2000)  
+                  return   
                 }
             }catch(e) {
                  Notify({ type: 'danger', message: e.message,duration:2000})
@@ -227,72 +264,80 @@ export default {
             let nextParams = res.data    
 
             // 请求用户信息
-            let insUserDataClear = setTimeout(queryInsUserData,500)
+           await queryInsUserData()
 
             async function queryInsUserData() {
-                if(!nextParams) return clearTimeout(insUserDataClear)
+                if(!nextParams) return 
                 try {
                    console.log("请求用户数据")
                    res = await getBatchDownloadInsUserResult(nextParams)    
-                   if(!res.data) {
-                       clearTimeout(insUserDataClear) 
-                       return setTimeout(queryInsUserData,500) 
-                   }
-
+                   if(res.code!==0) {return Notify({ type:'danger', message:res.msg ,duration:2000})}
+                 
                    const insUserData_ = res.data  
-                   console.log("博主信息",insUserData)
+                   /** 解码url */
+                   insUserData_.insUserPic = decodeURIComponent(insUserData_.insUserPic) 
                    skeletonLoadding.value = false  
                    insUserData.value = insUserData_ 
                 }catch(e) { 
                     console.log(e) 
-                    clearInterval(insUserDataClear)
                     Notify({type:"danger",message:res.data.msg,duration:2000})
                 }
                 
             }
 
             //请求帖子数据
-            let postDataClear = setTimeout(queryInsData,500)
+            setTimeout(()=>{queryInsData(0,0,true)},1500)
             // 终止条件 corsorType = 1  hasNext = false  
             async function queryInsData(corsor = 0 , corsorType = 0 ,hasNext = true ){  
-               if(!nextParams) return clearTimeout(postDataClear) 
+               if(!nextParams) return 
                try {
                    loadding.value = true
                    console.log("请求用户帖子数据")
                    res = await getBatchDownloadInsDataResult({...nextParams,corsor,corsorType}) 
+                   console.log("帖子数据返回",res)
                    const resData = res.data    
                    if(!resData) {
                        loadding = false 
-                       return setTimeout(async ()=>{ await queryInsData(corsor,corsorType,hasNext)},500)
+                       return Notify({ type:'danger', message:"网络异常！" ,duration:2000})
+                    //    setTimeout( ()=>{ queryInsData(corsor,corsorType,hasNext)},500)
                    }
-                   corsor = resData.corsor 
-                   corsorType = resData.corsorType
-                   hasNext = resData.hasNext  
+
+                   corsor = resData.corsor // 0 , 3 , 3
+                   corsorType = resData.corsorType // 0 , 1 , 1 
+                   hasNext = resData.hasNext  // fasle , true , true 
+
                    if(corsorType === 1 && hasNext === false){ 
+                       console.log(`触发了终止条件 corsor=${corsor} corsorType = ${corsorType} hasNext =${hasNext}`)
                         loadding.value = false
-                        return clearTimeout(postDataClear) 
+                        title.value = "资源获取完毕"
+                        return 
                    }
-                   if(hasNext === false && corsorType !==1) corsorType = 1 , corsor = 0
+
+                   if(hasNext === false && corsorType !==1) corsorType = 1 , corsor = 0 ,hasNext = true 
+                   
+                   /** 处理得到的帖子数据 */
                    const insUserPostData_ = resData.insPostData 
                    if(insUserPostData_) {
                         for(let item of insUserPostData_ ){   
                                 try{
                                     item = JSON.parse(item)  
                                     item.checked = true
+                                    item.postDisplay = decodeURIComponent(item.postDisplay) 
                                     insPostData.value.push(item)
                                 }catch(e) {
                                     Notify({type:"danger",message:e.message,duration:500})
                                 }
                         }
                    }
+                  /************************/ 
+                  queryInsData(corsor,corsorType,hasNext) 
                   
-                   loadding.value = false
-                   setTimeout(async ()=>{ await queryInsData(corsor,corsorType,hasNext)},500)
+
                }catch(e) { 
                    console.log(e) 
-                   clearInterval(postDataClear) 
-                   Notify({ type:'danger', message:res.msg ,duration:2000})
+                   Notify({ type:'danger', message:"网络异常！" ,duration:2000})
                    loadding.value = false 
+                   return
                }
             }
             
@@ -313,8 +358,11 @@ export default {
             queryDetial,
             subscribe,
             downloadBatch,
-            overlayShow
+            overlayShow,
+            title,
+            copyDownLoadLink
         }
+
     },
     data() {
        return {
@@ -341,11 +389,12 @@ export default {
 .ins-user-subscribe{font-size: 14px;padding: 2px;color: rgba(100, 100, 100, .8);}
 .ins-user-account-data{display: flex;justify-content: space-around;padding: 10px 1px;}
 .ins-user-desc{padding: 5px 10px;font-size: 14px;font-family: 黑体;}
-.post-box{padding: 10px;display: flex; flex-wrap: wrap;}
-.post-img-wrap {width: 100px;height: 100px;}
-.post-type {position: relative;width: 100px;height: 100px;margin-left: 10px;}
-.post-type-position{position:absolute;right: 8px;top: 8px;z-index: 1;color: #fff;} 
-.post-checkbox-position {position:absolute;right: 8px;bottom: 8px;z-index: 1;color: #fff;}
+.post-box{padding: 20px;display: flex; flex-wrap: wrap;text-align: center;}
+.post-img-wrap {width:100%;}
+.post-type {position: relative;width: 30%;height: 100px;margin-left: 10px;}
+.post-type-position{position:absolute;right: 20%;top: 8px;z-index: 1;color: #fff;} 
+.post-checkbox-position {position:absolute;right: 8px;bottom: 8px;z-index: 1;color: #fff;width: 100%;}
 .ins-user-subscriber-action{position:absolute;top: 5px;right: 1px;}
 .down-tip {font-size: 14px;color: brown;}
+.tip {font-size: 14px;font-family: 'Times New Roman', Times, serif;}
 </style>

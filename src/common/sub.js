@@ -3,14 +3,38 @@
  *  @author  Changlon <changlong.a2@gmail.com>
  *  @github  https://github.com/Changlon
  *  @date    2022-04-07 15:11:51
+ *  订阅接口
  */
 
 import request from "../api"  
 import {cache,expire} from "../api" 
 
 
+/**
+ * 用户订阅博主
+ * @param {*} param0 
+ * @returns 
+ */
+export const userSubscription = async ({ 
+    openid = "" ,
+    insUserId = "" , 
+    insUsername = "", 
+    subscriptionId = ""
+}) => request({route:"/userSubscription",data:{openid,insUserId,insUsername,subscriptionId},type:"post"}) 
 
 
+
+/**
+ * 用户取消订阅博主
+ * @param {*} param0 
+ * @returns 
+ */
+ export const userUnSubscription = async ({ 
+    openid = "" ,
+    insUserId = "" , 
+    insUsername = "", 
+    subscriptionId = ""
+}) => request({route:"/userUnSubscription",data:{openid,insUserId,insUsername,subscriptionId},type:"post"}) 
 
 
 

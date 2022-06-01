@@ -12,6 +12,9 @@ import { watch } from '@vue/runtime-core'
       //监听路由变化, /sub订阅页面不需要 tarbar
       watch(()=>route.path,()=>{
         path.value = route.path
+        let active = path.value 
+        active = active.replace("/","") 
+        tabbarActive.value = active
       })
 
       const excludeRoutes = [

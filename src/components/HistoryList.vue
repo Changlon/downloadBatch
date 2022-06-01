@@ -4,6 +4,7 @@
   left-arrow title="历史列表" 
    @click-left="onClickLeft"
    />
+
 <van-skeleton class="margin-top-1" title :row="3"  v-show="skeletonLoadding" />
     <!-- ins博主账号信息 -->   
     <keep-alive>
@@ -37,7 +38,6 @@
                 </div>        
                 <div class="ins-user-desc">{{insUserData.biography}}</div> 
             </div>
-
     </keep-alive>
   <!-- 帖子，视频 , 标记 --> 
     <van-tabs
@@ -45,26 +45,25 @@
         color="#DCDCDC"
         line-height="2px"
         @change="changeTab"
+        line-width="33%"
      >
-        <van-tab name="p">  <template v-slot:title><van-icon name="qr" /> 帖子</template>  
+        <van-tab name="p">  <template v-slot:title>  <span style="font-size:16px;"><van-icon name="qr" />   帖子</span> </template>  
 
             <van-skeleton class="margin-top-1" title :row="3"  v-show="skeletonLoadding" />
-
+           
             <div class="post-box" v-show="!skeletonLoadding" >
                     
-                    <div class="post-type margin-top" v-for="(item,index) in insPostData" :key="index" >
+                    <div class="post-type " v-for="(item,index) in insPostData" :key="index" >
                         <!-- isVideo 0 未知 1 单图  2 单视频 8 视频图片混合 -->
                         <i class="post-type-position ins " :class=" item.isVideo === 2 ? 'ins-shexiangtou'  : item.isVideo ===8 ? 'ins-duotu' : ''"></i> 
                         <van-checkbox class="post-checkbox-position" shape="square" v-model="item.checked"></van-checkbox>
                         <div class="post-img-wrap"   @click="queryDetial(item.mediaKey)">
-                            <van-image
-                              
-                                width="100px"
-                                height="100px"
+                            <!-- <van-image
                                 fit="cover"
                                 position="left"
                                 :src="item.postDisplay"
-                            />
+                            /> -->
+                            <img :src="item.postDisplay" alt="图片" style="width:100%;height:100%;">
                         </div>
                      </div> 
 
@@ -74,7 +73,7 @@
                         <img src="../assets/empty.png" style="width:200px;" alt="">
                     </div>
             </div>
-            
+           
             <div v-show="insPostData.length>0" class="margin-top-3" style="width:97%;margin:30px auto"> 
                 
                 <van-button type="primary" block @click="downloadBatch" :loading="downLoadding" > 
@@ -82,22 +81,36 @@
                     已选择 {{postCheckedNum}} 批量下载 
                     </van-button>
             </div>
-            
-             <a  class="down-tip" :href="postDownloadZip" v-show="postDownloadZip" ref="down"> 点击下载压缩文件 </a>
+
+            <div class="tip padding"> 
+                 <p>
+                 <a  class="down-tip" :href="postDownloadZip" v-show="postDownloadZip" ref="down"> 点击下载压缩文件 </a>
+                </p>
+                <p>
+                 <van-button style="margin-left:10px" type="primary" size="small" v-show="postDownloadZip" @click="copyDownLoadLink">复制文件下载地址</van-button>
+
+                </p>
+                <p>批量保存方法: </p> 
+                <p>1. 选择文件点击【批量下载】后, 点击【复制文件下载地址】按钮，粘贴到手机自带的浏览器访问即可！</p>
+                <p>2. 如果你的浏览器支持自动下载，直接点击【点击下载压缩文件】下载即可！</p>
+                <p>3. 如果你感觉下载时间漫长，可以先退出，下载好后公众号会发送提醒！</p> 
+               
+             </div>
+           
 
         </van-tab> 
 
-      
+       
         
 
-        <van-tab name="tv"> <template v-slot:title><van-icon name="video-o" /> IGTV</template> 
+        <van-tab name="tv"> <template v-slot:title>  <span style="font-size:16px;"> <van-icon name="video-o" /> IGTV </span></template> 
               <div style="padding:80px">
                         <img src="../assets/working.png" style="width:200px;" alt="">
                 </div>
         </van-tab>
 
 
-        <van-tab name="tag"><template v-slot:title><van-icon name="bookmark-o" /> 已标记</template> 
+        <van-tab name="tag"><template v-slot:title> <span style="font-size:16px;"> <van-icon name="bookmark-o" /> 已标记 </span></template> 
                <div style="padding:80px">
                         <img src="../assets/working.png" style="width:200px;" alt="">
                 </div>
@@ -117,6 +130,7 @@
         
     </van-overlay>
 
+
 </template>
 
 <script> 
@@ -126,8 +140,7 @@ import {Notify} from "vant"
 import { getCurrentInstance, onMounted, watch } from '@vue/runtime-core'
 import { useRoute, useRouter } from 'vue-router'
 import { get } from '../utils'
-
-
+import { copyContentH5 } from '../utils'
 
 export default { 
     name:"HistoryList", 
@@ -190,7 +203,21 @@ export default {
                     mediaListStr = mediaListStr + `&mediaList=${str}`
                 }
                 downLoadding.value = true
-                let res = await downloadZipFile(openid,mediaListStr)   
+                let res 
+                 try{
+                    res = await downloadZipFile(openid,mediaListStr)
+                      if(res.code!==0) {
+                                downLoadding.value = false
+                                return  Notify({type:"danger",message:res.msg})
+                           }
+
+                }catch(e){
+                        console.log(e,22222222222222222222)
+                     downLoadding.value = false
+                  return  Notify({type:"danger",message:e.message})
+                }
+
+
                 downLoadding.value = false
                 postDownloadZip.value = res.data 
                 Notify({ type: 'success', message: "批量下载成功，复制zip链接在浏览器打开",duration:1000}) 
@@ -200,6 +227,13 @@ export default {
 
         }
        
+       let copyDownLoadLink = ()=>{
+            const result = copyContentH5(postDownloadZip.value) 
+            if(result) {
+                Notify({type:"success",message:"复制文案链接成功,粘贴到浏览器查看文案！",duration:3000})
+            }
+       }
+
         onMounted(async ()=>{
 
             Notify({ type: 'success', message: "正在获取历史结果",duration:500})
@@ -214,7 +248,12 @@ export default {
                 try {
                    console.log("请求用户数据")
                    let res = await queryInsUserInfo(postParams.value.openid || get("openid"),postParams.value.username)    
-                   const insUserData_ = res.data  
+                  
+                      if(res.code===500) {
+                        downLoadding.value = false
+                        return  Notify({type:"danger",message:res.msg})
+                    }
+                  const insUserData_ = res.data  
                    console.log("博主信息",insUserData)
                    skeletonLoadding.value = false  
                    insUserData.value = insUserData_ 
@@ -240,6 +279,7 @@ export default {
                        try{
                         item = JSON.parse(item)  
                         item.checked = true
+                        item.media_url = decodeURIComponent(item.media_url)
                         insPostData.value.push(item)
                        }catch(e) {
                           Notify({type:"danger",message:e.message,duration:1000})
@@ -252,42 +292,7 @@ export default {
                }
             }
    
-            // let postDataClear = setTimeout(queryInsData,1000)
-            // // 终止条件 corsorType = 1  hasNext = false  
-            // async function queryInsData(corsor = 0 , corsorType = 0 ,hasNext = true ){  
-            //    if(!nextParams) return clearTimeout(postDataClear) 
-            //    try {
-            //        loadding.value = true
-            //        console.log("请求用户帖子数据")
-            //        res = await getBatchDownloadInsDataResult({...nextParams,corsor,corsorType}) 
-            //        const resData = res.data    
-            //        corsor = resData.corsor 
-            //        corsorType = resData.corsorType
-            //        hasNext = resData.hasNext  
-            //        if(corsorType === 1 && hasNext === false){ 
-            //             loadding.value = false
-            //             return clearTimeout(postDataClear) 
-            //        }
-            //        if(hasNext === false && corsorType !==1) corsorType = 1 , corsor = 0
-            //        const insUserPostData_ = resData.insPostData 
-            //        for(let item of insUserPostData_ ){   
-            //            try{
-            //             item = JSON.parse(item)  
-            //             item.checked = true
-            //             insPostData.value.push(item)
-            //            }catch(e) {
-            //               Notify({type:"danger",message:res.msg,duration:1000})
-            //            }
-            //        }
-            //        loadding.value = false
-            //        setTimeout(async ()=>{ await queryInsData(corsor,corsorType,hasNext)},1000)
-            //    }catch(e) { 
-            //        console.log(e) 
-            //        clearInterval(postDataClear) 
-            //        Notify({ type:'danger', message:res.data.msg ,duration:2000})
-            //        loadding.value = false 
-            //    }
-            // }
+          
           
      
 
@@ -310,7 +315,8 @@ export default {
             queryDetial,
             subscribe,
             downloadBatch,
-            overlayShow
+            overlayShow,
+            copyDownLoadLink
         }
     },
     data() {
@@ -338,11 +344,12 @@ export default {
 .ins-user-subscribe{font-size: 14px;padding: 2px;color: rgba(100, 100, 100, .8);}
 .ins-user-account-data{display: flex;justify-content: space-around;padding: 10px 1px;}
 .ins-user-desc{padding: 5px 10px;font-size: 14px;font-family: 黑体;}
-.post-box{padding: 10px;display: flex; flex-wrap: wrap;}
-.post-img-wrap {width: 100px;height: 100px;}
-.post-type {position: relative;width: 100px;height: 100px;margin-left: 10px;}
-.post-type-position{position:absolute;right: 8px;top: 8px;z-index: 1;color: #fff;} 
-.post-checkbox-position {position:absolute;right: 8px;bottom: 8px;z-index: 1;color: #fff;}
+.post-box{display: flex; flex-wrap: wrap;text-align: center;padding: 2px;}
+.post-img-wrap {width:100%;height: 100%;}
+.post-type {position: relative;width: 33%;margin-left: 1px;margin-top: 1px;}
+.post-type-position{position:absolute;right: 10%;top: 8px;z-index: 1;color: #fff;} 
+.post-checkbox-position {position:absolute;z-index: 1;color: #fff;width: 100%;padding: 5px;}
 .ins-user-subscriber-action{position:absolute;top: 5px;right: 1px;}
 .down-tip {font-size: 14px;color: brown;}
+.tip {font-size: 14px;font-family: 'Times New Roman', Times, serif;}
 </style>

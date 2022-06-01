@@ -7,8 +7,11 @@ import Vant from 'vant'
 import 'vant/lib/index.css'
 import { d_ } from './utils'
 
-// d_() 
+let env = process.env.NODE_ENV 
 
+if(!env.startsWith("dev") ) {
+//    d_()
+}
 
 createApp(App)  
 .use(router)

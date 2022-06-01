@@ -12,10 +12,10 @@ export default {
   
   server:{
     proxy: {
-      '/api': {
-        target: 'http://5195n943r7.wicp.vip/api/wechat/common/',	//实际请求地址
+      '/target': {
+        target: 'https://api.inscarry.com/insProject/api/wechat/common',	//实际请求地址
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
+        rewrite: (path) => path.replace(/^\/target/, '')
       },
     }
   },

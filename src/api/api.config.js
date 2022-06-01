@@ -2,12 +2,15 @@
 export default {
    timeout:25000,
    dev:{
-    domain:"http://5195n943r7.wicp.vip/", 
-   // domain:"localhost",
-    port:""
+   //  domain:"http://5195n943r7.wicp.vip/", 
+   //  domain:"localhost",
+   //  port:8090
+   domain:"https://api.inscarry.com/insProject", 
+   port: ""
+  
    },
    pro:{
-    domain:"http://5195n943r7.wicp.vip/", 
+    domain:"https://api.inscarry.com/insProject", 
     port: ""
    },
    cache:true,

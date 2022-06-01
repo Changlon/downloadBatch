@@ -1,7 +1,7 @@
 <template>
     <div >
         <div class="top-box"> 
-           <div class="text-center"><img src="../assets/logo.png" style="width:100px;" alt=""></div>
+           <div class="text-center"><img src="https://api.inscarry.com/logo.png" style="width:50px;border-radius:15%;" alt=""></div>
          
             <div class="van-multi-ellipsis--20 logo-tip">
                 一键极速  <i class="ins ins-jisu"></i> <br>
@@ -45,7 +45,7 @@
 <script>
 import { ref } from '@vue/reactivity'
 import {parseInsLink,getQueryVariable, set, get} from "../utils"
-import {Notify} from "vant"
+import {Notify, Tab} from "vant"
 
 export default {
     name:"Home",
@@ -117,7 +117,7 @@ export default {
         download() {    
             const that = this 
             if(!that.postData.openid) return Notify("没有用户数据")
-            if(!that.postData.link) return Notify("请输入链接")
+            if(!that.postData.link) return Notify("未检测到ins链接") 
             this.$router.push({params:that.postData,name:"imageList",query:{timestamp:new Date().getTime()}})
         },  
             
@@ -125,12 +125,15 @@ export default {
     watch:{
         link(n) {   
             const that  = this 
-            const result =  parseInsLink(n) 
-            if(!result) return 
+          
+            const result =  parseInsLink(n)  
+          
+            if(!result) return that.postData.link = null 
             that.postData.link = result.link 
             that.postData.username = result.username 
             that.postData.linkType = result.type 
             that.postData.shortcode = result.shortcode 
+
         }
     }
     

@@ -2,7 +2,7 @@
  *  @author  Changlon <changlong.a2@gmail.com>
  *  @github  https://github.com/Changlon
  *  @date    2022-03-12 23:47:15 
- *  核心业务逻辑接口 
+ *  批量接口 
  */
 
 
@@ -16,7 +16,7 @@
   * @returns 
   */
 //  export const batchDownloadMessionInfo =async data => request("/batchDownloadMessionInfo",data,"post") 
- export const batchDownloadMessionInfo =async data => request({route:"/batchDownloadMessionInfo",data,type:"post",cache,expire})  
+ export const batchDownloadMessionInfo =async data => request({route:"/batchDownloadMessionInfo",data,type:"post"})  
  
  /**
   * 获取批量任务ins帖子信息
@@ -24,7 +24,7 @@
   * @returns 
   */
 // export const getBatchDownloadInsDataResult = async data=>request("/queryBatchDownloadResult",data,"post") 
-export const getBatchDownloadInsDataResult = async data=>request({route:"/queryBatchDownloadResult",data,type:"post",expire,cache}) 
+export const getBatchDownloadInsDataResult = async data=>request({route:"/queryBatchDownloadResult",data,type:"post"}) 
 
 
  /**
@@ -33,7 +33,7 @@ export const getBatchDownloadInsDataResult = async data=>request({route:"/queryB
   * @returns 
   */
 // export const getBatchDownloadInsUserResult = async data => request("/queryInsUserInfo",data,"post")
-export const getBatchDownloadInsUserResult = async data => request({route:"/queryInsUserInfo",data,type:"post",expire,cache})  
+export const getBatchDownloadInsUserResult = async data => request({route:"/queryInsUserInfo",data,type:"post"})  
 
 
 /**
@@ -42,7 +42,7 @@ export const getBatchDownloadInsUserResult = async data => request({route:"/quer
  * @returns 
  */
 // export const getBatchDownloadDetail =async data=>request("/queryPostDetail",data,"post")
-export const getBatchDownloadDetail =async data=>request({route:"/queryPostDetail",data,type:"post",expire,cache}) 
+export const getBatchDownloadDetail =async data=>request({route:"/queryPostDetail",data,type:"post"}) 
 
 /**
  * 批量下载帖子
@@ -50,7 +50,7 @@ export const getBatchDownloadDetail =async data=>request({route:"/queryPostDetai
  * @returns 
  */
 // export const downloadZipFile = async (openid,mediaListStr)=>request(`/downloadZipFile?openid=${openid}&${mediaListStr}`,{},"post") 
-export const downloadZipFile = async (openid,mediaListStr)=>request({route:`/downloadZipFile?openid=${openid}&${mediaListStr}`,type:"post",cache,expire})  
+export const downloadZipFile = async (openid,mediaListStr)=>request({route:`/downloadZipFile?openid=${openid}&${mediaListStr}`,type:"post"})  
 
 
 /**
@@ -59,7 +59,7 @@ export const downloadZipFile = async (openid,mediaListStr)=>request({route:`/dow
  * @returns 
  */
 // export const queryBatchHistory = async openId=> request("/queryBatchHistory",{openId},"post")
-export const queryBatchHistory = async openId=> request({route:"/queryBatchHistory",data:{openId},type:"post",cache,expire}) 
+export const queryBatchHistory = async openId=> request({route:"/queryBatchHistory",data:{openId},type:"post"}) 
 
 
 
@@ -71,7 +71,7 @@ export const queryBatchHistory = async openId=> request({route:"/queryBatchHisto
  * @returns 
  */
 // export const queryBatchHistoryResult = async (historyId,corsor = 0 ,corsorType = 0 )=> request("/queryBatchHistoryResult",{historyId,corsor,corsorType},"post") 
-export const queryBatchHistoryResult = async (historyId,corsor = 0 ,corsorType = 0 )=> request({route:"/queryBatchHistoryResult",data:{historyId,corsor,corsorType},type:"post",cache,expire})  
+export const queryBatchHistoryResult = async (historyId,corsor = 0 ,corsorType = 0 )=> request({route:"/queryBatchHistoryResult",data:{historyId,corsor,corsorType},type:"post"})  
 
 
 
@@ -82,8 +82,8 @@ export const queryBatchHistoryResult = async (historyId,corsor = 0 ,corsorType =
  * @returns 
  */
 // export const queryInsUserInfo = async (openid,username) => request("/queryInsUserInfo",{openid,username},"post")
-export const queryInsUserInfo = async (openid,username) => request({route:"/queryInsUserInfo",data:{openid,username},type:"post",cache,expire}) 
-
+export const queryInsUserInfo = async (openid,username) => request({route:"/queryInsUserInfo",data:{openid,username},type:"post"}) 
+ 
 
 
 

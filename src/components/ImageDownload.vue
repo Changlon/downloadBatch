@@ -13,26 +13,35 @@
 
     <div v-else > 
         <div class="tip">
-           <p>提示：</p> 
-           <p>1. 图片 右击另存为 (pc端); 长按下载 (移动浏览器)</p> 
-           <p>2. 视频点击最右边的控件选择下载</p> 
+           <p>提示 (保存方式)：</p> 
+           <h4>图片保存</h4>
+           <p>1.鼠标右键图片另存为 (电脑端)</p> 
+           <p>2.长按图标下载 (手机浏览器)</p> 
+            
+            <h4>视频保存</h4>
+           <p>1. 鼠标右键另存为视频，或者点击视频播放器右下角 ┇ 选择下载 (电脑端)</p> 
+           <p>2. 点击视频播放器右下角 ┇ 选择下载 (安卓手机浏览器)</p> 
+           <p>3. 复制链接粘贴到浏览器下载 (苹果手机浏览器)</p> 
+           
         </div>
         
         <div class="post-box">
 
-             <div class="post-type margin-top" v-for="(item,index) in insPostData" :key="index"  >
-                <div v-if="item.media_type === 'image' && item.media_ins_type === 'item'"> 
+             <div  v-for="(item,index) in insPostData" :key="index"  >
+                <div class="post-type margin-top" v-if="item.media_type === 'image' && item.media_ins_type === 'item'"> 
                         <van-image
-                            width="100px"
-                            height="100px"
+                            width="120px"
+                            height="120px"
                             fit="fill"
                             position="left"
                             :src="item.media_url"
                         />
+                        
                 </div> 
 
-                <div v-if="item.media_type==='video'"> 
+                <div v-if="item.media_type==='video'" class="margin-top"> 
                     <video width="300" height="150" :src="item.media_url" controls ></video>
+                    <van-button style="margin-left:10px" type="primary" size="small" @click="copyVideoLink(item.media_url)">复制视频链接</van-button>
                 </div> 
             </div>
 
@@ -46,7 +55,7 @@
 </div>
 
 <!-- <iframe :src="caption" frameborder="0" style="font-size:24px;"></iframe> --> 
-
+<p class="tip">复制文案方法: 点击【复制文案链接按钮】粘贴到手机自带的浏览器访问即可！ </p>
 <van-button style="margin-left:10px" type="primary" size="small" @click="copyCaptionLink">复制文案链接</van-button>
 <!-- 
 <div class="footer" v-show="insPostData.length>0">
@@ -108,6 +117,8 @@ export default {
             insPostData.value = locals
             insPostData.value.forEach(async i=>{
                 i.checked=true 
+                i.media_url = decodeURIComponent(i.media_url)
+                console.log(i.media_url)
                 if(i.media_ins_type === "caption") {
                     let media_url = i.media_url  
                     caption.value = media_url
@@ -155,6 +166,12 @@ export default {
           if(result) {
               Notify({type:"success",message:"复制文案链接成功,粘贴到浏览器查看文案！",duration:3000})
           }
+        },
+        copyVideoLink(media_url) {
+              const result = copyContentH5(media_url) 
+          if(result) {
+              Notify({type:"success",message:"复制视频链接成功,粘贴到外部浏览器访问保存！",duration:3000})
+          }
         }
     
     }
@@ -164,7 +181,7 @@ export default {
 <style scoped >
 .post-box{padding: 10px;display: flex; flex-wrap: wrap;}
 .post-img-wrap {padding: 20px;}
-.post-type {position: relative;margin-left: 10px;}
+.post-type {position: relative;margin-left: 5%;text-align: center;padding: 1px;}
 .post-type-position{position:absolute;bottom: 38px;left: 38px;z-index: 1000;color: #fff;font-size: 24px;}
 .footer{ width: 100%;position: fixed; bottom: 40px;text-align: center;} 
 .tip {font-size: 14px;font-family: 'Times New Roman', Times, serif;}

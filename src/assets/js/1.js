@@ -1,6 +1,9 @@
 
+
+
+
 (win =>{
-        
+    let env = process.env.NODE_ENV 
   var ImageColorMask =  win.ImageColorMask = function(colors, opts){
         opts.debug = opts.debug ? opts.debug : false;
         this.colors = colors;
@@ -211,7 +214,9 @@
         ctx.drawImage(img, 0, 0) 
     } 
 
-    img.src = "src/assets/logo.png"
+    // img.src = "src/assets/logo.png"
+    // img.src = "https://api.inscarry.com/logo.png" 
+    img.src =  env.startsWith("dev") ? "src/assets/logo.png" : "https://api.inscarry.com/logo.png"
 
 
 })(window)
